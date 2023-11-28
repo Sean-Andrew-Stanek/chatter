@@ -21,7 +21,7 @@ const changeAlpha = (rgbaString, newAlpha) => {
 const StartScreen = ({navigation}) => {
 
     const [name, setName] = useState('');
-    const [backgroundColor, setBackgroundColor] = useState('rbga(100, 255, 100, 0.8)');
+    const [backgroundColor, setBackgroundColor] = useState('rbga(100, 0, 0, 1)');
 
     const colorOptions = ['rgba(100, 0, 0, 1)', 'rgba(0, 100, 0, 1)', 'rgba(100,0,100, 1)'];
 
@@ -51,7 +51,7 @@ const StartScreen = ({navigation}) => {
                     {
                         //COLOR SELECTION LABEL
                     }
-                    <Text style={[{color: backgroundColor, paddingBottom: 5, width:'100%', textAlignVertical:'center', fontSize:14, textAlign: 'left', marginVertical:0}]}>
+                    <Text style={[{color: changeAlpha(backgroundColor, 1), paddingBottom: 5, width:'100%', textAlignVertical:'center', fontSize:14, textAlign: 'left', marginVertical:0}]}>
                         Choose Background Color:
                     </Text>
                     {
