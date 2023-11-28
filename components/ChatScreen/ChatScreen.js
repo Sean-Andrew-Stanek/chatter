@@ -3,16 +3,16 @@ import { StyleSheet, View, Text } from 'react-native';
 import { PropTypes } from 'prop-types';
 import { useEffect } from 'react';
 
-const Screen2 = ({route, navigation}) => {
+const ChatScreen = ({route, navigation}) => {
 
     const { name } = route.params;
 
     useEffect(() => {
-        navigation.setOptions({ title: name});
+        navigation.setOptions({ title: name });
     }, []);
 
     return (
-        <View style={styles.container}>
+        <View style={[styles.container, {backgroundColor: route.params.backgroundColor}]}>
             <Text>Welcome to the Second Screen</Text>
         </View>
     );
@@ -26,7 +26,7 @@ const styles = StyleSheet.create({
     }
 });
 
-Screen2.propTypes = {
+ChatScreen.propTypes = {
     route: PropTypes.shape({
         params: PropTypes.object.isRequired,
     }).isRequired,
@@ -35,4 +35,4 @@ Screen2.propTypes = {
     }).isRequired
 };
 
-export default Screen2;
+export default ChatScreen;

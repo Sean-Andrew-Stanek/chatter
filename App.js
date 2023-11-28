@@ -2,8 +2,8 @@ import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import React from 'react';
 
-import Screen1 from './components/Screen1/Screen1';
-import Screen2 from './components/Screen2/Screen2';
+import StartScreen from './components/StartScreen/StartScreen';
+import ChatScreen from './components/ChatScreen/ChatScreen';
 
 //Create the Navigator
 const Stack = createNativeStackNavigator();
@@ -15,13 +15,13 @@ const App = () => {
                 initialRouteName='Screen1'
             >
                 <Stack.Screen
-                    name='Screen1'
-                    component={Screen1}
+                    name='StartScreen'
+                    component={StartScreen}
                 />
 
                 <Stack.Screen
-                    name='Screen2'
-                    component={Screen2}
+                    name='ChatScreen'
+                    component={ChatScreen}
                 />
 
             </Stack.Navigator>
