@@ -21,7 +21,7 @@ const changeAlpha = (rgbaString, newAlpha) => {
 const StartScreen = ({navigation}) => {
 
     const [name, setName] = useState('');
-    const [backgroundColor, setBackgroundColor] = useState('rbga(100, 0, 0, 1)');
+    const [themeColor, setThemeColor] = useState('rbga(100, 0, 0, 1)');
 
     const colorOptions = ['rgba(100, 0, 0, 1)', 'rgba(0, 100, 0, 1)', 'rgba(100,0,100, 1)'];
 
@@ -32,7 +32,7 @@ const StartScreen = ({navigation}) => {
             {
                 //LOGIN CONTAINER
             }
-            <View style={[styles.loginContainer, {backgroundColor: changeAlpha(backgroundColor, 0.4)}]}> 
+            <View style={[styles.loginContainer, {backgroundColor: changeAlpha(themeColor, 0.4)}]}> 
                 {
                     //USERNAME INPUT
                 }
@@ -51,7 +51,7 @@ const StartScreen = ({navigation}) => {
                     {
                         //COLOR SELECTION LABEL
                     }
-                    <Text style={[{color: changeAlpha(backgroundColor, 1), paddingBottom: 5, width:'100%', textAlignVertical:'center', fontSize:14, textAlign: 'left', marginVertical:0}]}>
+                    <Text style={[{color: changeAlpha(themeColor, 1), paddingBottom: 5, width:'100%', textAlignVertical:'center', fontSize:14, textAlign: 'left', marginVertical:0}]}>
                         Choose Background Color:
                     </Text>
                     {
@@ -63,7 +63,7 @@ const StartScreen = ({navigation}) => {
                             <TouchableOpacity
                                 key={index}
                                 style={[styles.backgroundColorSelector, {backgroundColor: color}]}
-                                onPress={() => setBackgroundColor(colorOptions[index])}
+                                onPress={() => setThemeColor(colorOptions[index])}
                             >
                             </TouchableOpacity>
                         ))}
@@ -74,8 +74,8 @@ const StartScreen = ({navigation}) => {
                     //NAVIGATION BUTTON
                 }
                 <TouchableOpacity
-                    style={[styles.loginItem, styles.loginButton, {backgroundColor: changeAlpha(backgroundColor, .5)}]}
-                    onPress={() => navigation.navigate('ChatScreen', {name: name, backgroundColor: backgroundColor})}
+                    style={[styles.loginItem, styles.loginButton, {backgroundColor: changeAlpha(themeColor, .5)}]}
+                    onPress={() => navigation.navigate('ChatScreen', {name: name, themeColor: themeColor})}
                 >
                     <Text 
                         style={styles.loginButtonText}

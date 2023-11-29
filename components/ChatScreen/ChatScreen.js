@@ -12,8 +12,8 @@ const ChatScreen = ({route, navigation}) => {
     }, []);
 
     return (
-        <View style={[styles.container, {backgroundColor: route.params.backgroundColor}]}>
-            <Text>Welcome to the Second Screen</Text>
+        <View style={[styles.container, {backgroundColor: route.params.themeColor}]}>
+            <Text>Welcome to the Second Screen, {name}</Text>
         </View>
     );
 };
