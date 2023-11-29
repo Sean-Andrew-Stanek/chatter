@@ -1,31 +1,21 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { StyleSheet, View, Text, TextInput, ImageBackground, TouchableOpacity } from 'react-native';
 import { PropTypes } from 'prop-types';
 import image from '../../assets/background.png';
 
-
-// This function takes the "backgroundcolor" and messes with the alpha.
-const changeAlpha = (rgbaString, newAlpha) => {
-    //Match one or more digits "\d+", then an optional "?" decimal "\.\d+"
-    const match = rgbaString.match(/(\d+(\.\d+)?)/g);
-    if(!match || match.length !== 4)
-        return rgbaString;
-
-    // eslint-disable-next-line
-    const [red, green, blue, _] = match;
-    const returnRGBA = `rgba(${red},${green},${blue},${newAlpha})`;
-
-    return returnRGBA;
-};
+import { contrastText, changeAlpha } from '../../color-library';
 
 const StartScreen = ({navigation}) => {
 
     const [name, setName] = useState('');
-    const [themeColor, setThemeColor] = useState('rbga(100, 0, 0, 1)');
+    const [themeColor, setThemeColor] = useState('rgba(100, 0, 0, 1)');
+    const [textColor, setTextColor] = useState(contrastText(themeColor));
 
-    const colorOptions = ['rgba(100, 0, 0, 1)', 'rgba(0, 100, 0, 1)', 'rgba(100,0,100, 1)'];
+    const colorOptions = ['rgba(100, 0, 0, 1)', 'rgba(0, 255, 0, 1)', 'rgba(100,0,100, 1)', 'rgba(0,0,0,1)', 'rgba(25,25,25,1)'];
 
-    
+    useEffect(() => {
+        setTextColor(contrastText(themeColor));
+    }, [themeColor]);
 
     return (
         <ImageBackground source = {image} resizeMode='cover' style={styles.container}>
@@ -37,7 +27,7 @@ const StartScreen = ({navigation}) => {
                     //USERNAME INPUT
                 }
                 <TextInput
-                    style={[styles.textInput, styles.loginItem]}
+                    style={[styles.textInput, styles.loginItem, {color:textColor}]}
                     value={name}
                     onChangeText={setName}
                     placeholder='Type your username here'
@@ -78,7 +68,7 @@ const StartScreen = ({navigation}) => {
                     onPress={() => navigation.navigate('ChatScreen', {name: name, themeColor: themeColor})}
                 >
                     <Text 
-                        style={styles.loginButtonText}
+                        style={[styles.loginButtonText, {color:textColor}]}
                     >
                         Start Chatting
                     </Text>
