@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { StyleSheet, View, Text, TextInput, ImageBackground, TouchableOpacity } from 'react-native';
+import { StyleSheet, View, Text, TextInput, ImageBackground, TouchableOpacity, } from 'react-native';
 import { PropTypes } from 'prop-types';
 import image from '../../assets/background.png';
 
