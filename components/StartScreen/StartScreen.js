@@ -11,7 +11,7 @@ const StartScreen = ({navigation}) => {
     const [themeColor, setThemeColor] = useState('rgba(100, 0, 0, 1)');
     const [textColor, setTextColor] = useState(contrastText(themeColor));
 
-    const colorOptions = ['rgba(100, 0, 0, 1)', 'rgba(0, 255, 0, 1)', 'rgba(100,0,100, 1)', 'rgba(0,0,0,1)', 'rgba(25,25,25,1)'];
+    const colorOptions = ['rgba(255, 255, 255, 1)', 'rgba(0, 255, 0, 1)', 'rgba(100,0,100, 1)', 'rgba(0,0,0,1)', 'rgba(25,25,25,1)'];
 
     useEffect(() => {
         setTextColor(contrastText(themeColor));
