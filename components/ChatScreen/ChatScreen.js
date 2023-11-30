@@ -3,7 +3,7 @@ import { StyleSheet, View, Platform, KeyboardAvoidingView} from 'react-native';
 import { PropTypes } from 'prop-types';
 import { useEffect } from 'react';
 import { Bubble, GiftedChat } from 'react-native-gifted-chat';
-import { collection, getDocs, addDoc, onSnapshot } from 'firebase/firestore';
+import { collection, orderBy, addDoc, onSnapshot, query, /* where */ } from 'firebase/firestore';
 
 import { contrastText, changeAlpha } from '../../color-library';
 import { useState } from 'react';
@@ -30,41 +30,46 @@ const renderBubble = (props, themeColor) => {
 //Main Component
 const ChatScreen = ({database, route, navigation}) => {
 
-    const { name, themeColor } = route.params;
+    const { userID, name, themeColor } = route.params;
     const [messages, setMessages] = useState([]);
 
     const onSend = (newMessages) => {
-        setMessages(previousMessages => GiftedChat.append(previousMessages, newMessages));
+        /* setMessages(previousMessages => GiftedChat.append(previousMessages, newMessages)); */
+        addDoc(collection(database, 'Messages'), newMessages[0]);
     };
 
-    const addMessage = async (newList) => {
-        const newListRef = await addDoc(collection, "Messages", newList);
-        if(newListRef.id) {
-            Alert.alert(`The list "${listName}" has been added.`);
-        }else{
-            Alert.alert('Unable to add.  Please try later');
-        }
-    }
 
-    const fetchMessages = async() => {
-        //CHANGE THIS
-        const listsDocuments = await getDocs(collection(database, 'Messages')) 
-        let newList = [];
-        //PULLS THIS DATA FROM THE DATABASE
-        listsDocuments.forEach(docObject => {
-            newLists.push({id:docObject.id, ...docObject.data()})
-        });
-
-        setMessages(newList);
-    }
-
+    //LOAD DATABASE
     useEffect(() => {
-        //Set the Title to the users' name
-        navigation.setOptions({ title: name });
+        try{
+            //Set the Title to the users' name
+            navigation.setOptions({ title: name });
 
-        const unsubMessages = onSnapshot(
-            query(collection(database, 'Messages'), where('uid','==', userID))
-        )
+            //Desired query
+            const targetQuery = query(collection(database, 'Messages'), /* where('uid', '==', userID),  */orderBy('createdAt', 'desc'));
+            
+            //Callback to unsub onSnapshot
+            const unsubMessages = 
+                onSnapshot(targetQuery, (messagesSnapshot) => {
+                    let newMessages = [];
+                    //PULLS THIS DATA FROM THE DATABASE
+                    messagesSnapshot.forEach(docObject => {
+                        newMessages.push({
+                            id:docObject.id, 
+                            ...docObject.data(),
+                            createdAt: new Date(docObject.data().createdAt.toMillis())});
+                    });
+
+                    setMessages(newMessages);
+                });
+
+            return () => {
+                if(unsubMessages)
+                    unsubMessages();
+            };
+        } catch(error) {
+            console.error('Error in useEffect:', error);
+        }
     }, []);
 
     return (
@@ -74,7 +79,8 @@ const ChatScreen = ({database, route, navigation}) => {
                 renderBubble={(props) => renderBubble(props, themeColor)}
                 onSend={messages => onSend(messages)}
                 user={{
-                    _id:1
+                    _id: {userID},
+                    name: name
                 }}
             />
             {Platform.OS === 'android' ? <KeyboardAvoidingView behavior='height' />: null}
@@ -90,6 +96,8 @@ const styles = StyleSheet.create({
 });
 
 ChatScreen.propTypes = {
+    database: PropTypes.shape({
+    }).isRequired,
     route: PropTypes.shape({
         params: PropTypes.object.isRequired,
     }).isRequired,

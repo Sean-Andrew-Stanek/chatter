@@ -22,9 +22,9 @@ const StartScreen = ({navigation}) => {
                 navigation.navigate('ChatScreen', {userID: result.user.uid, name: name, themeColor: themeColor});
                 Alert.alert('Signed in Successfully!');
             }).catch((error) => {
-                Alert.alert('Unable to sign in, try again later.');
-            })
-    }
+                Alert.alert(`Unable to sign in, try again later: ${error}`);
+            });
+    };
 
     useEffect(() => {
         setTextColor(contrastText(themeColor));
