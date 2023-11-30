@@ -3,7 +3,7 @@ import { StyleSheet, View, Platform, KeyboardAvoidingView} from 'react-native';
 import { PropTypes } from 'prop-types';
 import { useEffect } from 'react';
 import { Bubble, GiftedChat } from 'react-native-gifted-chat';
-import { collection, getDocs, addDoc } from 'firebase/firestore';
+import { collection, getDocs, addDoc, onSnapshot } from 'firebase/firestore';
 
 import { contrastText, changeAlpha } from '../../color-library';
 import { useState } from 'react';
@@ -38,7 +38,7 @@ const ChatScreen = ({database, route, navigation}) => {
     };
 
     const addMessage = async (newList) => {
-        const newListRef = await addDoc(collection, "DATABASE NAME", newList);
+        const newListRef = await addDoc(collection, "Messages", newList);
         if(newListRef.id) {
             Alert.alert(`The list "${listName}" has been added.`);
         }else{
@@ -48,7 +48,7 @@ const ChatScreen = ({database, route, navigation}) => {
 
     const fetchMessages = async() => {
         //CHANGE THIS
-        const listsDocuments = await getDocs(collection(database, 'nameOfDatabase')) 
+        const listsDocuments = await getDocs(collection(database, 'Messages')) 
         let newList = [];
         //PULLS THIS DATA FROM THE DATABASE
         listsDocuments.forEach(docObject => {
@@ -61,6 +61,10 @@ const ChatScreen = ({database, route, navigation}) => {
     useEffect(() => {
         //Set the Title to the users' name
         navigation.setOptions({ title: name });
+
+        const unsubMessages = onSnapshot(
+            query(collection(database, 'Messages'), where('uid','==', userID))
+        )
     }, []);
 
     return (
