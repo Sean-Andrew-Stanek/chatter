@@ -1,17 +1,30 @@
 import React, { useState, useEffect } from 'react';
-import { StyleSheet, View, Text, TextInput, ImageBackground, TouchableOpacity, } from 'react-native';
+import { StyleSheet, View, Text, TextInput, ImageBackground, TouchableOpacity, Alert, } from 'react-native';
 import { PropTypes } from 'prop-types';
 import image from '../../assets/background.png';
+import { getAuth, signInAnonymously } from 'firebase/auth';
 
 import { contrastText, changeAlpha } from '../../color-library';
 
 const StartScreen = ({navigation}) => {
+
+    const auth = getAuth();
 
     const [name, setName] = useState('');
     const [themeColor, setThemeColor] = useState('rgba(100, 0, 0, 1)');
     const [textColor, setTextColor] = useState(contrastText(themeColor));
 
     const colorOptions = ['rgba(255, 255, 255, 1)', 'rgba(0, 255, 0, 1)', 'rgba(100,0,100, 1)', 'rgba(0,0,0,1)', 'rgba(25,25,25,1)'];
+
+    const signInUser = () => {
+        signInAnonymously(auth)
+            .then(result => {
+                navigation.navigate('ChatScreen', {userID: result.user.uid, name: name, themeColor: themeColor});
+                Alert.alert('Signed in Successfully!');
+            }).catch((error) => {
+                Alert.alert('Unable to sign in, try again later.');
+            })
+    }
 
     useEffect(() => {
         setTextColor(contrastText(themeColor));
@@ -65,7 +78,7 @@ const StartScreen = ({navigation}) => {
                 }
                 <TouchableOpacity
                     style={[styles.loginItem, styles.loginButton, {backgroundColor: changeAlpha(themeColor, .5)}]}
-                    onPress={() => navigation.navigate('ChatScreen', {name: name, themeColor: themeColor})}
+                    onPress={signInUser}
                 >
                     <Text 
                         style={[styles.loginButtonText, {color:textColor}]}

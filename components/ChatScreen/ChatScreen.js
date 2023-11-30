@@ -3,10 +3,13 @@ import { StyleSheet, View, Platform, KeyboardAvoidingView} from 'react-native';
 import { PropTypes } from 'prop-types';
 import { useEffect } from 'react';
 import { Bubble, GiftedChat } from 'react-native-gifted-chat';
+import { collection, getDocs, addDoc } from 'firebase/firestore';
 
 import { contrastText, changeAlpha } from '../../color-library';
 import { useState } from 'react';
 
+
+//Chat Bubbles
 const renderBubble = (props, themeColor) => {
     return (
         <Bubble
@@ -23,7 +26,9 @@ const renderBubble = (props, themeColor) => {
     );
 };
 
-const ChatScreen = ({route, navigation}) => {
+
+//Main Component
+const ChatScreen = ({database, route, navigation}) => {
 
     const { name, themeColor } = route.params;
     const [messages, setMessages] = useState([]);
@@ -32,30 +37,30 @@ const ChatScreen = ({route, navigation}) => {
         setMessages(previousMessages => GiftedChat.append(previousMessages, newMessages));
     };
 
+    const addMessage = async (newList) => {
+        const newListRef = await addDoc(collection, "DATABASE NAME", newList);
+        if(newListRef.id) {
+            Alert.alert(`The list "${listName}" has been added.`);
+        }else{
+            Alert.alert('Unable to add.  Please try later');
+        }
+    }
+
+    const fetchMessages = async() => {
+        //CHANGE THIS
+        const listsDocuments = await getDocs(collection(database, 'nameOfDatabase')) 
+        let newList = [];
+        //PULLS THIS DATA FROM THE DATABASE
+        listsDocuments.forEach(docObject => {
+            newLists.push({id:docObject.id, ...docObject.data()})
+        });
+
+        setMessages(newList);
+    }
+
     useEffect(() => {
         //Set the Title to the users' name
         navigation.setOptions({ title: name });
-
-        //Test message
-        setMessages([
-            {
-                _id:1,
-                text: 'Hello Dev',
-                createdAt: new Date(),
-                user: {
-                    _id: 2,
-                    name: 'React Native',
-                    avatar: 'http://placeimg.com/140/140/any',
-                },
-            },
-            {
-                _id:2,
-                text: 'This is a system message',
-                createdAt: new Date(),
-                system: true,
-            },
-        ]);
-
     }, []);
 
     return (

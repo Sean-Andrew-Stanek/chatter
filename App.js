@@ -13,6 +13,21 @@ import ChatScreen from './components/ChatScreen/ChatScreen';
 const Stack = createNativeStackNavigator();
 
 const App = () => {
+    const firebaseConfig = {
+        apiKey: "AIzaSyAPVSLWVrAURc3W4cVkSvcOyh6iRCjQDok",
+        authDomain: "chatter-17de2.firebaseapp.com",
+        projectId: "chatter-17de2",
+        storageBucket: "chatter-17de2.appspot.com",
+        messagingSenderId: "1014994951167",
+        appId: "1:1014994951167:web:d88461dc704b944ef4e5ca",
+        measurementId: "G-7YQZ179XDG"
+    }
+
+    // Initialize Firebase
+    const app = initializeApp(firebaseConfig);
+
+    const database = getFirestore(app)
+
     return (
         <NavigationContainer>
             <Stack.Navigator
@@ -25,8 +40,14 @@ const App = () => {
 
                 <Stack.Screen
                     name='ChatScreen'
-                    component={ChatScreen}
-                />
+                >
+                    {props => 
+                        <ChatScreen
+                            database = {database}
+                            {...props}
+                        />
+                    }
+                </Stack.Screen>
 
             </Stack.Navigator>
         </NavigationContainer>
@@ -35,8 +56,7 @@ const App = () => {
 
 export default App;
 
-// Initialize Firebase
-const app = initializeApp(firebaseConfig);
+
 
 //Recommended by Firebase.  Needs import (above)
 //const analytics = getAnalytics(app);
