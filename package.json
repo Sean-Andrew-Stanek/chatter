@@ -17,7 +17,8 @@
     "prop-types": "^15.8.1",
     "react": "18.2.0",
     "react-native": "0.72.6",
-    "react-native-gifted-chat": "^2.4.0"
+    "react-native-gifted-chat": "^2.4.0",
+    "@react-native-community/netinfo": "9.3.10"
   },
   "devDependencies": {
     "@babel/core": "^7.20.0",
