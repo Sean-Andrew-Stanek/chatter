@@ -23,10 +23,19 @@ const ChatScreen = ({isConnected, database, route, navigation}) => {
                 {...props}
                 wrapperStyle={{
                     right: {
-                        backgroundColor: changeAlpha(contrastText(themeColor), .2),
+                        backgroundColor: changeAlpha(contrastText(themeColor), .1),
+                        
                     },
                     left: {
-                        backgroundColor: changeAlpha(contrastText(themeColor), .8),
+                        backgroundColor: changeAlpha(contrastText(themeColor), .7),
+                    }
+                }}
+                textStyle={{
+                    right: {
+                        color: contrastText(themeColor),
+                    },
+                    left: {
+                        color: themeColor,
                     }
                 }}
             />
@@ -44,9 +53,10 @@ const ChatScreen = ({isConnected, database, route, navigation}) => {
 
     const { userID, name, themeColor } = route.params;
     const [messages, setMessages] = useState([]);
-
+    console.log(userID + "is the userid")
     const onSend = (newMessages) => {
         /* setMessages(previousMessages => GiftedChat.append(previousMessages, newMessages)); */
+        console.log('New Message id ' + newMessages[0].user._id);
         addDoc(collection(database, firebaseDBName), newMessages[0]);
     };
 
@@ -99,7 +109,7 @@ const ChatScreen = ({isConnected, database, route, navigation}) => {
                     //PULLS THIS DATA FROM THE DATABASE
                     messagesSnapshot.forEach(docObject => {
                         newMessages.push({
-                            id:docObject.id, 
+                            _id:docObject._id, 
                             ...docObject.data(),
                             createdAt: new Date(docObject.data().createdAt.toMillis())});
                     });
@@ -126,7 +136,7 @@ const ChatScreen = ({isConnected, database, route, navigation}) => {
                 renderInputToolbar={(props) => renderInputToolbar(props)}
                 onSend={messages => onSend(messages)}
                 user={{
-                    _id: {userID},
+                    _id: userID,
                     name: name
                 }}
             />
@@ -135,7 +145,7 @@ const ChatScreen = ({isConnected, database, route, navigation}) => {
                 style={[{backgroundColor: changeAlpha(themeColor, .5)}]}
                 onPress={eraseDatabase}
             >
-                <Text>
+                <Text style={{color:contrastText(themeColor)}}>
                     Erase All Data - Network Status {isConnected?'Online':'Offline'}
                 </Text>
             </TouchableOpacity>
