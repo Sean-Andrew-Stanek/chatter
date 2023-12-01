@@ -29,6 +29,10 @@ const App = () => {
         }
     }, [connectionStatus.isConnected]);
 
+    useEffect( () => {
+        console.log('Connection Status:', connectionStatus);
+    }, [connectionStatus.isConnected]);
+
     const firebaseConfig = {
         apiKey: 'AIzaSyAPVSLWVrAURc3W4cVkSvcOyh6iRCjQDok',
         authDomain: 'chatter-17de2.firebaseapp.com',

@@ -1,15 +1,17 @@
 import React from 'react';
-import { StyleSheet, View, Platform, KeyboardAvoidingView} from 'react-native';
+import { StyleSheet, View, Text, TouchableOpacity, Platform, KeyboardAvoidingView} from 'react-native';
 import { PropTypes } from 'prop-types';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { Bubble, GiftedChat, InputToolbar } from 'react-native-gifted-chat';
 import { collection, orderBy, addDoc, onSnapshot, query, } from 'firebase/firestore';
-import { AsyncStorage } from '@react-native-async-storage/async-storage';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import { contrastText, changeAlpha } from '../../color-library';
-import { useState } from 'react';
 
+//AsyncStorage Database Key
+const asyncDBKey = 'Messages';
 
-
+//Firebase Database Name
+const firebaseDBName = 'Messages';
 
 //Main Component
 const ChatScreen = ({isConnected, database, route, navigation}) => {
@@ -40,12 +42,6 @@ const ChatScreen = ({isConnected, database, route, navigation}) => {
             return null;
     };
 
-    //AsyncStorage Database Key
-    let asyncDBKey = 'Messages';
-
-    //Firebase Database Name
-    let firebaseDBName = 'Messages';
-
     const { userID, name, themeColor } = route.params;
     const [messages, setMessages] = useState([]);
 
@@ -54,10 +50,15 @@ const ChatScreen = ({isConnected, database, route, navigation}) => {
         addDoc(collection(database, firebaseDBName), newMessages[0]);
     };
 
+    const eraseDatabase = () => {
+        AsyncStorage.removeItem(asyncDBKey);
+        setMessages([]);
+    };
+
     //Store for when the user is offline
     const cacheDatabase = async(dataToBase) => {
         try { 
-            await AsyncStorage.setItem('Messages', JSON.stringify(dataToBase));
+            await AsyncStorage.setItem(asyncDBKey, JSON.stringify(dataToBase));
         } catch (error) {
             console.log(error.message);
         }
@@ -65,53 +66,56 @@ const ChatScreen = ({isConnected, database, route, navigation}) => {
     
     const loadCachedDatabase = async () => {
         const cacheDatabase = await AsyncStorage.getItem(asyncDBKey) || [];
-        setMessages(JSON.parse(cacheDatabase));
+        if(cacheDatabase !== null)
+            setMessages(JSON.parse(cacheDatabase));
+        else    
+            console.log('No cached data found.');
     };
 
     //LOAD DATABASE
     useEffect(() => {
-        try{
-            //Set the Title to the users' name
-            navigation.setOptions({ title: name });
 
-            //Our callback to unsub to avoid MemLeaks
-            let unsubMessages;
+        //Set the Title to the users' name
+        navigation.setOptions({ title: name });
 
-            if(isConnected === true){
+        //Our callback to unsub to avoid MemLeaks
+        let unsubMessages;
 
-                //If there is already a listener, remove it
-                if(unsubMessages)
-                    unsubMessages();
-                unsubMessages = null;
+        if(isConnected){
 
-                //Desired query
-                //collection(localDatabase, firebaseDB)
-                const targetQuery = query(collection(database, firebaseDBName), orderBy('createdAt', 'desc'));
-                
-                //Callback to unsub onSnapshot
-                unsubMessages = 
-                    onSnapshot(targetQuery, (messagesSnapshot) => {
-                        let newMessages = [];
-                        //PULLS THIS DATA FROM THE DATABASE
-                        messagesSnapshot.forEach(docObject => {
-                            newMessages.push({
-                                id:docObject.id, 
-                                ...docObject.data(),
-                                createdAt: new Date(docObject.data().createdAt.toMillis())});
-                        });
-                        //Store for offline use
-                        cacheDatabase(newMessages);
-                        setMessages(newMessages);
+            //If there is already a listener, remove it
+            if(unsubMessages)
+                unsubMessages();
+            unsubMessages = null;
+
+            //Desired query
+            //collection(localDatabase, firebaseDB)
+            const targetQuery = query(collection(database, firebaseDBName), orderBy('createdAt', 'desc'));
+            
+            //Callback to unsub onSnapshot
+            unsubMessages = 
+                onSnapshot(targetQuery, (messagesSnapshot) => {
+                    let newMessages = [];
+                    //PULLS THIS DATA FROM THE DATABASE
+                    messagesSnapshot.forEach(docObject => {
+                        newMessages.push({
+                            id:docObject.id, 
+                            ...docObject.data(),
+                            createdAt: new Date(docObject.data().createdAt.toMillis())});
                     });
-            } else loadCachedDatabase();
-
-            return () => {
-                if(unsubMessages)
-                    unsubMessages();
-            };
-        } catch(error) {
-            console.error('Error in useEffect:', error);
+                    //Store for offline use
+                    cacheDatabase(newMessages);
+                    setMessages(newMessages);
+                });
+        } else {
+            loadCachedDatabase();
         }
+
+        return () => {
+            if(unsubMessages)
+                unsubMessages();
+        };
+
     }, [isConnected]);
 
     return (
@@ -126,6 +130,16 @@ const ChatScreen = ({isConnected, database, route, navigation}) => {
                     name: name
                 }}
             />
+            
+            <TouchableOpacity
+                style={[{backgroundColor: changeAlpha(themeColor, .5)}]}
+                onPress={eraseDatabase}
+            >
+                <Text>
+                    Erase All Data - Network Status {isConnected?'Online':'Offline'}
+                </Text>
+            </TouchableOpacity>
+
             {Platform.OS === 'android' ? <KeyboardAvoidingView behavior='height' />: null}
             {Platform.OS === 'ios' ? <KeyboardAvoidingView behavior='padding' />: null}
         </View>
