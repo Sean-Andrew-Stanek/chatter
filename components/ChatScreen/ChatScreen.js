@@ -4,13 +4,14 @@
 //#################/
 
 import React from 'react';
-import { StyleSheet, View, Text, TouchableOpacity, Platform, KeyboardAvoidingView} from 'react-native';
+import { StyleSheet, View, Text, Platform, KeyboardAvoidingView} from 'react-native';
 import { PropTypes } from 'prop-types';
 import { useEffect, useState } from 'react';
-import { Bubble, GiftedChat, InputToolbar, CustomActions } from 'react-native-gifted-chat';
+import { Bubble, GiftedChat, InputToolbar } from 'react-native-gifted-chat';
 import { collection, orderBy, addDoc, onSnapshot, query, } from 'firebase/firestore';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { contrastText, changeAlpha } from '../../color-library';
+import CustomActions from '../CustomActions/CustomActions';
 
 //For Testing and Debug Alerts
 //import { Alert } from 'react-native';
@@ -78,8 +79,8 @@ const ChatScreen = ({isConnected, database, route, navigation}) => {
     };
 
     const renderCustomActions = (props) => {
-        return <CustomActions {...props} />
-    }
+        return <CustomActions {...props} />;
+    };
 
     //When text message is sent
     const onSend = (newMessages) => {
@@ -180,6 +181,7 @@ const ChatScreen = ({isConnected, database, route, navigation}) => {
     return (
         <View style={[styles.rootContainer, {backgroundColor: themeColor}]}>
             <GiftedChat
+                style={{flex:1}}
                 messages={messages}
                 renderBubble={(props) => renderBubble(props, themeColor)}
                 renderInputToolbar={(props) => renderInputToolbar(props)}
@@ -191,14 +193,23 @@ const ChatScreen = ({isConnected, database, route, navigation}) => {
                 }}
             />
             
-            <TouchableOpacity
-                style={[{backgroundColor: changeAlpha(themeColor, .5)}]}
-                onPress={eraseDatabase}
+            {/* <TouchableOpacity
+                style={[{height:'10%', backgroundColor: changeAlpha(themeColor, .5)}]}
+                onPress={}
+            >
+
+            </TouchableOpacity> */}
+
+            <View
+                style={[{height:'5%', backgroundColor: changeAlpha(themeColor, .5)}]}
             >
                 <Text style={{color:contrastText(themeColor)}}>
-                    Erase All Data - Network Status {isConnected?'Online':'Offline'}
+                    Network Status: {isConnected?'Online':'Offline'}
                 </Text>
-            </TouchableOpacity>
+            </View>
+
+
+
             
             {Platform.OS === 'android' ? <KeyboardAvoidingView behavior='height' />: null}
             {Platform.OS === 'ios' ? <KeyboardAvoidingView behavior='padding' />: null}

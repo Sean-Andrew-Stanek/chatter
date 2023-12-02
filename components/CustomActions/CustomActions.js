@@ -5,14 +5,17 @@ import React from 'react';
 import { StyleSheet, View, Text, TouchableOpacity, Alert} from 'react-native';
 import * as Location from 'expo-location';
 import MapView from 'react-native-maps';
+import {useActionSheet} from '@expo/react-native-action-sheet';
 
 //Main Component
-const CustomActions = () => {
+const CustomActions = (themeColor) => {
     
 
     ////#################/
     ///##   States   ###/
     //#################/
+
+    const actionSheet = useActionSheet();
 
     const [image, setImage] = useState(null);
     const [location, setLocation] = useState(null);
@@ -20,6 +23,31 @@ const CustomActions = () => {
     ////#################/
     ///##  Functions ###/
     //#################/
+
+    const onActionPress = () => {
+        const options = ['Choose Image From Library', 'Use Camera', 'Send Location', 'Cancel'];
+        const cancelButtonIndex = options.length -1;
+        actionSheet.showActionSheetWithOptions(
+            {
+                options,
+                cancelButtonIndex,
+            },
+            async (buttonIndex) => {
+                switch (buttonIndex) {
+                    case 0:
+                        pickImage();
+                        return;
+                    case 1:
+                        takePhoto();
+                        return;
+                    case 2:
+                        getLocation();
+                        return;
+                    default:
+                }
+            }
+        );
+    };
 
     //Button - Pick image to post
     const pickImage = async() => {
@@ -69,8 +97,23 @@ const CustomActions = () => {
     ///##    return   ##/
     //#################/ 
     return (
+
         <View>
-            {/* Pick Image Button */}
+            {/* Clickable menu */}
+            <TouchableOpacity
+                onPress={onActionPress}
+                style={[styles.container]}
+            >
+                <View style={[styles.wrapper]}>
+                    <Text style={[styles.iconText]}> 
+                        +
+                    </Text>
+                </View>
+
+            </TouchableOpacity>
+
+            {/*
+            {/* Pick Image Button /}
             <TouchableOpacity
                 style={[styles.photoButton,]}
                 onPress={pickImage}
@@ -80,7 +123,7 @@ const CustomActions = () => {
                 </Text>
             </TouchableOpacity>
             
-            {/* Camera Button */}
+            {/* Camera Button /}
             <TouchableOpacity
                 style={[styles.photoButton,]}
                 onPress={takePhoto}
@@ -98,7 +141,7 @@ const CustomActions = () => {
                     Geolocation
                 </Text>
             </TouchableOpacity>
-            
+            */}
         </View>
 
     );
@@ -125,6 +168,26 @@ const styles = StyleSheet.create({
         width: '50%',
         justifyContent: 'center',
     },
+    container: {
+        width: 26, 
+        height: 26,
+        marginLeft: 10,
+        marginRight: 10,
+        justifyContent: 'center',
+    },
+    wrapper: {
+        borderRadius: 13,
+        borderColor: '#b2b2b2',
+        borderWidth: 2,
+        flex: 1,
+        justifyContent: 'center',
+    },
+    iconText: {
+        color: '#b2b2b2',
+        fontWeight: 100,
+        backgroundColor: 'transparent',
+        textAlign: 'center',
+    }
 });
 
 export default CustomActions;
