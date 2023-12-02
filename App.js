@@ -12,6 +12,8 @@ import { Alert } from 'react-native';
 import StartScreen from './components/StartScreen/StartScreen';
 import ChatScreen from './components/ChatScreen/ChatScreen';
 
+
+
 //Create the Navigator
 const Stack = createNativeStackNavigator();
 
@@ -28,11 +30,7 @@ const App = () => {
             enableNetwork(database);
         }
     }, [connectionStatus.isConnected]);
-
-    useEffect( () => {
-        console.log('Connection Status:', connectionStatus);
-    }, [connectionStatus.isConnected]);
-
+    
     const firebaseConfig = {
         apiKey: 'AIzaSyAPVSLWVrAURc3W4cVkSvcOyh6iRCjQDok',
         authDomain: 'chatter-17de2.firebaseapp.com',

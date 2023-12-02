@@ -1,3 +1,8 @@
+
+////#################/
+///##   imports   ##/
+//#################/
+
 import React from 'react';
 import { StyleSheet, View, Text, TouchableOpacity, Platform, KeyboardAvoidingView} from 'react-native';
 import { PropTypes } from 'prop-types';
@@ -6,6 +11,13 @@ import { Bubble, GiftedChat, InputToolbar } from 'react-native-gifted-chat';
 import { collection, orderBy, addDoc, onSnapshot, query, } from 'firebase/firestore';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { contrastText, changeAlpha } from '../../color-library';
+import * as ImagePicker from 'expo-image-picker';
+//For Testing and Debug Alerts
+import { Alert } from 'react-native';
+
+////#################/
+///##   Globals   ##/
+//#################/
 
 //AsyncStorage Database Key
 const asyncDBKey = 'Messages';
@@ -15,7 +27,19 @@ const firebaseDBName = 'Messages';
 
 //Main Component
 const ChatScreen = ({isConnected, database, route, navigation}) => {
+    
+    ////#################/
+    ///##   States   ###/
+    //#################/
 
+    const [image, setImage] = useState(null);
+    const { userID, name, themeColor } = route.params;
+    const [messages, setMessages] = useState([]);
+
+    ////#################/
+    ///##  Functions ###/
+    //#################/
+    
     //Chat Bubbles
     const renderBubble = (props, themeColor) => {
         return (
@@ -51,9 +75,6 @@ const ChatScreen = ({isConnected, database, route, navigation}) => {
             return null;
     };
 
-    const { userID, name, themeColor } = route.params;
-    const [messages, setMessages] = useState([]);
-    console.log(userID + "is the userid")
     const onSend = (newMessages) => {
         /* setMessages(previousMessages => GiftedChat.append(previousMessages, newMessages)); */
         console.log('New Message id ' + newMessages[0].user._id);
@@ -81,6 +102,20 @@ const ChatScreen = ({isConnected, database, route, navigation}) => {
         else    
             console.log('No cached data found.');
     };
+
+    const pickImage = () => {
+        Alert.alert('Under construction.');
+        return null;
+    }
+
+    const placeHolderFunct = () => {
+        Alert.alert('Under construction.');
+        return null;
+    }
+
+    ////#################/
+    ///##  useEffects ##/
+    //#################/
 
     //LOAD DATABASE
     useEffect(() => {
@@ -128,6 +163,11 @@ const ChatScreen = ({isConnected, database, route, navigation}) => {
 
     }, [isConnected]);
 
+
+    ////#################/
+    ///##    return   ##/
+    //#################/   
+
     return (
         <View style={[styles.rootContainer, {backgroundColor: themeColor}]}>
             <GiftedChat
@@ -150,6 +190,17 @@ const ChatScreen = ({isConnected, database, route, navigation}) => {
                 </Text>
             </TouchableOpacity>
 
+            <TouchableOpacity
+                style={[styles.photoButton,{backgroundColor:themeColor, color:contrastText(themeColor)}]}
+                title = 'Pick image from library'
+                onPress={pickImage}
+            />
+            <TouchableOpacity
+                style={[styles.photoButton,{backgroundColor:themeColor, color:contrastText(themeColor)}]}
+                title = 'Take a Photo'
+                onPress={pickImage}
+            />
+
             {Platform.OS === 'android' ? <KeyboardAvoidingView behavior='height' />: null}
             {Platform.OS === 'ios' ? <KeyboardAvoidingView behavior='padding' />: null}
         </View>
@@ -159,9 +210,17 @@ const ChatScreen = ({isConnected, database, route, navigation}) => {
 const styles = StyleSheet.create({
     rootContainer: {
         flex: 1,
-    }
+    },
+    photoButton: {
+        height: '10%',
+        width: '50%',
+        justifyContent: 'center',
+    },
 });
 
+////#################/
+///##  PropTypes  ##/
+//#################/
 ChatScreen.propTypes = {
     database: PropTypes.shape({
     }).isRequired,
