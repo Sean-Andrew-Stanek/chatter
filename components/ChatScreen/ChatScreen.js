@@ -81,6 +81,10 @@ const ChatScreen = ({isConnected, database, route, navigation}) => {
         addDoc(collection(database, firebaseDBName), newMessages[0]);
     };
 
+    //This will temporarily delete the cache
+    //NOTE:  The data is only locally deleted and
+    //will be refreshed on message sent or when
+    //moving from offline -> online
     const eraseDatabase = () => {
         AsyncStorage.removeItem(asyncDBKey);
         setMessages([]);
@@ -95,6 +99,7 @@ const ChatScreen = ({isConnected, database, route, navigation}) => {
         }
     };
     
+    //Load data from cached data when offline
     const loadCachedDatabase = async () => {
         const cacheDatabase = await AsyncStorage.getItem(asyncDBKey) || [];
         if(cacheDatabase !== null)
@@ -103,9 +108,23 @@ const ChatScreen = ({isConnected, database, route, navigation}) => {
             console.log('No cached data found.');
     };
 
-    const pickImage = () => {
-        Alert.alert('Under construction.');
-        return null;
+    //Button Function
+    //Pick image to post
+    const pickImage = async() => {
+        let permissions = await ImagePicker.requestMediaLibraryPermissionsAsync();
+        
+        if(permissions?.granted) {
+            let result = await ImagePicker.launchImageLibraryAsync({
+                //We can specify types here (Images, Videos, All)
+                mediaTypes: ImagePicker.MediaTypeOptions.Images
+            });
+
+            if(!result.canceled)
+                setImage(result.assets[0]);
+            else
+                setImage(null);
+        }
+
     }
 
     const placeHolderFunct = () => {
@@ -198,7 +217,7 @@ const ChatScreen = ({isConnected, database, route, navigation}) => {
             <TouchableOpacity
                 style={[styles.photoButton,{backgroundColor:themeColor, color:contrastText(themeColor)}]}
                 title = 'Take a Photo'
-                onPress={pickImage}
+                onPress={placeHolderFunct}
             />
 
             {Platform.OS === 'android' ? <KeyboardAvoidingView behavior='height' />: null}
