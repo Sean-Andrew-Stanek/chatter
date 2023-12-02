@@ -14,7 +14,7 @@ const StartScreen = ({navigation}) => {
     const [themeColor, setThemeColor] = useState('rgba(100, 0, 0, 1)');
     const [textColor, setTextColor] = useState(contrastText(themeColor));
 
-    const colorOptions = ['rgba(255, 255, 255, 1)', 'rgba(0, 255, 0, 1)', 'rgba(100,0,100, 1)', 'rgba(0,0,0,1)', 'rgba(25,25,25,1)'];
+    const colorOptions = ['rgba(255, 255, 255, 1)', 'rgba(100, 255, 150, 1)', 'rgba(100,0,100, 1)', 'rgba(100,0,0,1)', 'rgba(25,25,25,1)'];
 
     const signInUser = () => {
         signInAnonymously(auth)
@@ -54,7 +54,7 @@ const StartScreen = ({navigation}) => {
                     {
                         //COLOR SELECTION LABEL
                     }
-                    <Text style={[{color: changeAlpha(themeColor, 1), paddingBottom: 5, width:'100%', textAlignVertical:'center', fontSize:14, textAlign: 'left', marginVertical:0}]}>
+                    <Text style={[{color: contrastText(themeColor), paddingBottom: 5, width:'100%', textAlignVertical:'center', fontSize:14, textAlign: 'left', marginVertical:0}]}>
                         Choose Background Color:
                     </Text>
                     {
