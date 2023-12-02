@@ -7,7 +7,7 @@ import * as Location from 'expo-location';
 import MapView from 'react-native-maps';
 
 //Main Component
-const ActionSheet = () => {
+const CustomActions = () => {
     
 
     ////#################/
@@ -127,4 +127,4 @@ const styles = StyleSheet.create({
     },
 });
 
-export default ActionSheet;
+export default CustomActions;

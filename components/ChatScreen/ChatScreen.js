@@ -7,7 +7,7 @@ import React from 'react';
 import { StyleSheet, View, Text, TouchableOpacity, Platform, KeyboardAvoidingView} from 'react-native';
 import { PropTypes } from 'prop-types';
 import { useEffect, useState } from 'react';
-import { Bubble, GiftedChat, InputToolbar } from 'react-native-gifted-chat';
+import { Bubble, GiftedChat, InputToolbar, CustomActions } from 'react-native-gifted-chat';
 import { collection, orderBy, addDoc, onSnapshot, query, } from 'firebase/firestore';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { contrastText, changeAlpha } from '../../color-library';
@@ -70,14 +70,18 @@ const ChatScreen = ({isConnected, database, route, navigation}) => {
     };
 
     //Disables the input bar when offline
-    const renderInputToolbar = (props) =>
-    {
+    const renderInputToolbar = (props) => {
         if(isConnected)
             return <InputToolbar {...props} />;
         else
             return null;
     };
 
+    const renderCustomActions = (props) => {
+        return <CustomActions {...props} />
+    }
+
+    //When text message is sent
     const onSend = (newMessages) => {
         /* setMessages(previousMessages => GiftedChat.append(previousMessages, newMessages)); */
         console.log('New Message id ' + newMessages[0].user._id);
@@ -179,6 +183,7 @@ const ChatScreen = ({isConnected, database, route, navigation}) => {
                 messages={messages}
                 renderBubble={(props) => renderBubble(props, themeColor)}
                 renderInputToolbar={(props) => renderInputToolbar(props)}
+                renderActions={renderCustomActions}
                 onSend={messages => onSend(messages)}
                 user={{
                     _id: userID,
