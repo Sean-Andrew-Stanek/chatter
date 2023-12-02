@@ -11,9 +11,9 @@ import { Bubble, GiftedChat, InputToolbar } from 'react-native-gifted-chat';
 import { collection, orderBy, addDoc, onSnapshot, query, } from 'firebase/firestore';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { contrastText, changeAlpha } from '../../color-library';
-import * as ImagePicker from 'expo-image-picker';
+
 //For Testing and Debug Alerts
-import { Alert } from 'react-native';
+//import { Alert } from 'react-native';
 
 ////#################/
 ///##   Globals   ##/
@@ -25,14 +25,17 @@ const asyncDBKey = 'Messages';
 //Firebase Database Name
 const firebaseDBName = 'Messages';
 
-//Main Component
+////#################/
+///##    MAIN     ##/
+//#################/
+
 const ChatScreen = ({isConnected, database, route, navigation}) => {
     
     ////#################/
     ///##   States   ###/
     //#################/
 
-    const [image, setImage] = useState(null);
+
     const { userID, name, themeColor } = route.params;
     const [messages, setMessages] = useState([]);
 
@@ -108,29 +111,12 @@ const ChatScreen = ({isConnected, database, route, navigation}) => {
             console.log('No cached data found.');
     };
 
-    //Button Function
-    //Pick image to post
-    const pickImage = async() => {
-        let permissions = await ImagePicker.requestMediaLibraryPermissionsAsync();
-        
-        if(permissions?.granted) {
-            let result = await ImagePicker.launchImageLibraryAsync({
-                //We can specify types here (Images, Videos, All)
-                mediaTypes: ImagePicker.MediaTypeOptions.Images
-            });
 
-            if(!result.canceled)
-                setImage(result.assets[0]);
-            else
-                setImage(null);
-        }
 
-    }
-
-    const placeHolderFunct = () => {
+    /* const placeHolderFunct = () => {
         Alert.alert('Under construction.');
         return null;
-    }
+    } */
 
     ////#################/
     ///##  useEffects ##/
@@ -208,18 +194,7 @@ const ChatScreen = ({isConnected, database, route, navigation}) => {
                     Erase All Data - Network Status {isConnected?'Online':'Offline'}
                 </Text>
             </TouchableOpacity>
-
-            <TouchableOpacity
-                style={[styles.photoButton,{backgroundColor:themeColor, color:contrastText(themeColor)}]}
-                title = 'Pick image from library'
-                onPress={pickImage}
-            />
-            <TouchableOpacity
-                style={[styles.photoButton,{backgroundColor:themeColor, color:contrastText(themeColor)}]}
-                title = 'Take a Photo'
-                onPress={placeHolderFunct}
-            />
-
+            
             {Platform.OS === 'android' ? <KeyboardAvoidingView behavior='height' />: null}
             {Platform.OS === 'ios' ? <KeyboardAvoidingView behavior='padding' />: null}
         </View>
