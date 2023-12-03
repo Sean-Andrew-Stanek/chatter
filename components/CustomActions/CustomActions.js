@@ -6,10 +6,12 @@ import * as Location from 'expo-location';
 import {useActionSheet} from '@expo/react-native-action-sheet';
 import { PropTypes } from 'prop-types';
 import {getDownloadURL, ref, uploadBytes} from 'firebase/storage';
+import { contrastText, changeAlpha } from '../../color-library';
 
 //Main Component
 const CustomActions = ({storage, themeColor, onSend, userID}) => {
     
+    const contrastTheme = contrastText(themeColor);
 
     ////#################/
     ///##   States   ###/
@@ -57,19 +59,23 @@ const CustomActions = ({storage, themeColor, onSend, userID}) => {
     };
 
     const uploadAndSendImage = async(imageURI) => {
-        //Get the image and make it uploadable
-        const response = await fetch(imageURI);
-        const blob = await response.blob();
-        //Get the image name
-        const newUploadRef = ref(storage, generateID(imageURI));
-        //Upload and reference
-        uploadBytes(newUploadRef, blob)
-            .then( async() => {
-                console.log('File has been uploaded successfully');
-                //This may need a catch
-                const imageURL = await getDownloadURL(newUploadRef);
-                onSend({image:imageURL});
-            });
+        try{
+            //Get the image and make it uploadable
+            const response = await fetch(imageURI);
+            const blob = await response.blob();
+            //Get the image name
+            const newUploadRef = ref(storage, generateID(imageURI));
+            //Upload and reference
+            uploadBytes(newUploadRef, blob)
+                .then( async() => {
+                    console.log('File has been uploaded successfully');
+                    //This may need a catch
+                    const imageURL = await getDownloadURL(newUploadRef);
+                    onSend({image:imageURL});
+                });
+        } catch (error) {
+            console.error('Error uploading and sending image: ', error);
+        }
     };
 
     //Button - Pick image to post
@@ -100,7 +106,7 @@ const CustomActions = ({storage, themeColor, onSend, userID}) => {
             let result = await ImagePicker.launchCameraAsync();
 
             if(!result.canceled) 
-                uploadAndSendImage(result.assets[0]);
+                uploadAndSendImage(result.assets[0].uri);
             else
                 noPermissions();
         }
@@ -132,16 +138,14 @@ const CustomActions = ({storage, themeColor, onSend, userID}) => {
     //#################/ 
     return (
 
-        <View>
+        <View
+            style={[styles.container]}
+        >
             <TouchableOpacity
                 onPress={onActionPress}
-                style={[styles.container]}
+                style={[styles.wrapper, {borderColor: contrastTheme, backgroundColor: changeAlpha(contrastTheme, .8)}]}
             >
-                <View style={[styles.wrapper]}>
-                    <Text style={[styles.iconText]}> 
-                        +
-                    </Text>
-                </View>
+                <Text style={[styles.iconText, {  color: contrastText(contrastTheme)}]}>+</Text>
             </TouchableOpacity>
         </View>
 
@@ -149,30 +153,24 @@ const CustomActions = ({storage, themeColor, onSend, userID}) => {
 };
 
 const styles = StyleSheet.create({
-    photoButton: {
-        height: '10%',
-        width: '50%',
-        justifyContent: 'center',
-    },
     container: {
-        width: 26, 
-        height: 26,
-        marginLeft: 10,
-        marginRight: 10,
-        justifyContent: 'center',
+        padding: 0,
+        aspectRatio: 1,
+        margin:0
     },
     wrapper: {
-        borderRadius: 13,
-        borderColor: '#b2b2b2',
+        width: 60,
+        height: 60,
+        borderRadius: 30,
         borderWidth: 2,
+        margin: 5,
         flex: 1,
         justifyContent: 'center',
     },
     iconText: {
-        color: '#b2b2b2',
-        fontWeight: 100,
-        backgroundColor: 'transparent',
-        textAlign: 'center',
+        fontSize: 40,
+        fontWeight: 'bold',
+        alignSelf: 'center'
     }
 });
 

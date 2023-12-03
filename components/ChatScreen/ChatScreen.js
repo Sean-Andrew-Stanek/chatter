@@ -4,7 +4,7 @@
 //#################/
 
 import React from 'react';
-import { StyleSheet, View, Text, Platform, KeyboardAvoidingView} from 'react-native';
+import { StyleSheet, View, Text, Platform, ImageBackground, KeyboardAvoidingView} from 'react-native';
 import { PropTypes } from 'prop-types';
 import { useEffect, useState } from 'react';
 import { Bubble, GiftedChat, InputToolbar } from 'react-native-gifted-chat';
@@ -13,6 +13,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import { contrastText, changeAlpha } from '../../color-library';
 import CustomActions from '../CustomActions/CustomActions';
 import MapView from 'react-native-maps';
+import image from '../../assets/perlin.png';
 
 //For Testing and Debug Alerts
 //import { Alert } from 'react-native';
@@ -102,7 +103,15 @@ const ChatScreen = ({isConnected, database, storage, route, navigation}) => {
     //Disables the input bar when offline
     const renderInputToolbar = (props) => {
         if(isConnected)
-            return <InputToolbar {...props} />;
+            return (
+                <InputToolbar 
+                    containerStyle = {{backgroundColor:themeColor, height: 80}}
+                    primaryStyle = {{backgroundColor:changeAlpha(contrastText(themeColor), .5)}}
+                    contentContainerStyle={{padding:0}}
+                    {...props} 
+                    textStyle={{fontSize: 30}}
+                />
+            );
         else
             return null;
     };
@@ -213,46 +222,41 @@ const ChatScreen = ({isConnected, database, storage, route, navigation}) => {
     //#################/   
 
     return (
-        <View style={[styles.rootContainer, {backgroundColor: themeColor}]}>
-            <GiftedChat
-                style={{flex:1}}
-                messages={messages}
-                renderBubble={(props) => renderBubble(props, themeColor)}
-                renderInputToolbar={(props) => renderInputToolbar(props)}
-                renderActions={renderCustomActions}
-                renderCustomView={renderCustomView}
-                onSend={messages => onSend(messages)}
-                user={{
-                    _id: userID,
-                    name: name
-                }}
-            />
-            
-            {/* <TouchableOpacity
-                style={[{height:'10%', backgroundColor: changeAlpha(themeColor, .5)}]}
-                onPress={}
-            >
-
-            </TouchableOpacity> */}
-
-            <View
-                style={[{height:'5%', backgroundColor: changeAlpha(themeColor, .5)}]}
-            >
-                <Text style={{color:contrastText(themeColor)}}>
-                    Network Status: {isConnected?'Online':'Offline'}
-                </Text>
+        <ImageBackground source = {image} resizeMode='cover' style={[styles.rootContainer]}>
+            <View style={[styles.rootContainer, {backgroundColor: changeAlpha(themeColor, .2)}]}>
+                <View
+                    style={[{height:20, backgroundColor: changeAlpha(themeColor, .5)}]}
+                >
+                    <Text style={{color:contrastText(themeColor)}}>
+                        Network Status: {isConnected?'Online':'Offline'}
+                    </Text>
+                </View>
+                <GiftedChat
+                    style={[styles.giftedChat, {backgroundColor: changeAlpha(contrastText(themeColor), .8)}]}
+                    messages={messages}
+                    renderBubble={(props) => renderBubble(props, themeColor)}
+                    renderInputToolbar={(props) => renderInputToolbar(props)}
+                    renderActions={renderCustomActions}
+                    renderCustomView={renderCustomView}
+                    onSend={messages => onSend(messages)}
+                    user={{
+                        _id: userID,
+                        name: name
+                    }}
+                >
+                    {Platform.OS === 'android' ? <KeyboardAvoidingView behavior='height' />: null}
+                    {Platform.OS === 'ios' ? <KeyboardAvoidingView behavior='padding' />: null}
+                </GiftedChat>
             </View>
-
-
-
-            
-            {Platform.OS === 'android' ? <KeyboardAvoidingView behavior='height' />: null}
-            {Platform.OS === 'ios' ? <KeyboardAvoidingView behavior='padding' />: null}
-        </View>
+        </ImageBackground>
     );
 };
 
 const styles = StyleSheet.create({
+    giftedChat: {
+        flex: 1,
+        justifyContent: 'center',
+    },
     rootContainer: {
         flex: 1,
     },
