@@ -66,6 +66,10 @@ const StartScreen = ({navigation}) => {
                         <View style={[styles.backgroundColorSelectorContainer]}>
                             {colorOptions.map((color, index) => (
                                 <TouchableOpacity
+                                    accessible={true}
+                                    accessibilityLabel='Select color'
+                                    accessibilityHint='Toggle theme color'
+                                    accessibilityRole='button'
                                     key={index}
                                     //It would be nice to create an average color function for the border
                                     style={[styles.backgroundColorSelector, {backgroundColor: color, borderColor: changeAlpha(contrastTheme, .7)}]}
@@ -80,6 +84,10 @@ const StartScreen = ({navigation}) => {
                         //NAVIGATION BUTTON
                     }
                     <TouchableOpacity
+                        accessible={true}
+                        accessibilityLabel='Start'
+                        accessibilityHint='Continue to chat'
+                        accessibilityRole='button'
                         style={[styles.loginItem, styles.loginButton, {backgroundColor: changeAlpha(contrastText(contrastTheme), .4), borderColor: contrastTheme}]}
                         onPress={signInUser}
                     >
