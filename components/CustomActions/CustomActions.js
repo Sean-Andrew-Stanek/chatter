@@ -154,23 +154,23 @@ const CustomActions = ({storage, themeColor, onSend, userID}) => {
 
 const styles = StyleSheet.create({
     container: {
-        padding: 0,
-        aspectRatio: 1,
-        margin:0
+        width: 26,
+        height: 26,
+        marginLeft: 10,
+        marginBottom: 10,
     },
     wrapper: {
-        width: 60,
-        height: 60,
-        borderRadius: 30,
+        borderRadius: 13,
+        borderColor: '#b2b2b2',
         borderWidth: 2,
-        margin: 5,
         flex: 1,
-        justifyContent: 'center',
     },
     iconText: {
-        fontSize: 40,
+        color: '#b2b2b2',
         fontWeight: 'bold',
-        alignSelf: 'center'
+        fontSize: 16,
+        backgroundColor: 'transparent',
+        textAlign: 'center',
     }
 });
 
