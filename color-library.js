@@ -1,6 +1,9 @@
 // This function takes the "backgroundcolor" and messes with the alpha.
 export const changeAlpha = (rgbaString, newAlpha) => {
     //Match one or more digits "\d+", then an optional "?" decimal "\.\d+"
+    if(rgbaString == undefined)
+        return;
+    
     const match = rgbaString.match(/(\d+(\.\d+)?)/g);
     if(!match || match.length !== 4)
         return rgbaString;
@@ -13,6 +16,9 @@ export const changeAlpha = (rgbaString, newAlpha) => {
 };
 
 export const contrastText = (rgbaString) => {
+    if(rgbaString == undefined)
+        return;
+
     const match = rgbaString.match(/(\d+(\.\d+)?)/g);
     if(!match || match.length !== 4)
         return rgbaString;
