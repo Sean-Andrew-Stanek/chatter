@@ -142,6 +142,9 @@ const CustomActions = ({storage, themeColor, onSend, userID}) => {
             style={[styles.container]}
         >
             <TouchableOpacity
+                accessible={true}
+                accessibilityLabel='Add Attachment'
+                accessibilityRole='button'
                 onPress={onActionPress}
                 style={[styles.wrapper, {borderColor: contrastTheme, backgroundColor: changeAlpha(contrastTheme, .8)}]}
             >
