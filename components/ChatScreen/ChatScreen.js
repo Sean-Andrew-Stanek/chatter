@@ -4,7 +4,7 @@
 //#################/
 
 import React from 'react';
-import { StyleSheet, View, Text, Platform, ImageBackground, KeyboardAvoidingView} from 'react-native';
+import { StyleSheet, View, Text, ImageBackground, Platform, KeyboardAvoidingView} from 'react-native';
 import { PropTypes } from 'prop-types';
 import { useEffect, useState } from 'react';
 import { Bubble, GiftedChat, InputToolbar } from 'react-native-gifted-chat';
@@ -41,6 +41,7 @@ const ChatScreen = ({isConnected, database, storage, route, navigation}) => {
 
     const { userID, name, themeColor } = route.params;
     const [messages, setMessages] = useState([]);
+    const contrastTheme = contrastText(themeColor);
 
     ////#################/
     ///##  Functions ###/
@@ -103,12 +104,13 @@ const ChatScreen = ({isConnected, database, storage, route, navigation}) => {
     //Disables the input bar when offline
     const renderInputToolbar = (props) => {
         if(isConnected)
+            
             return (
                 <InputToolbar 
-                    textStyle={{fontSize: 30}}
-
-                    contentContainerStyle={{padding:0}}
-                    {...props} 
+                    containerStyle = {{backgroundColor: 'rgba(255,255,255,.5)', color: contrastTheme}}
+                    primaryStyle = {{color: contrastTheme}}
+                    {...props}
+                    
 
                 />
             );
@@ -224,7 +226,7 @@ const ChatScreen = ({isConnected, database, storage, route, navigation}) => {
 
     return (
         <ImageBackground source = {image} resizeMode='cover' style={[styles.rootContainer]}>
-            <View style={[styles.rootContainer, {backgroundColor: changeAlpha(themeColor, .2)}]}>
+            <View style={[styles.rootContainer, {backgroundColor: changeAlpha(themeColor, .8)}]}>
                 <View
                     style={[{height:20, backgroundColor: changeAlpha(themeColor, .5)}]}
                 >
@@ -232,21 +234,21 @@ const ChatScreen = ({isConnected, database, storage, route, navigation}) => {
                         Network Status: {isConnected?'Online':'Offline'}
                     </Text>
                 </View>
+
                 <GiftedChat
                     style={[styles.giftedChat, {backgroundColor: changeAlpha(contrastText(themeColor), .8)}]}
                     messages={messages}
                     renderBubble={(props) => renderBubble(props, themeColor)}
-                    renderInputToolbar={(props) => renderInputToolbar(props)}
                     renderActions={renderCustomActions}
                     renderCustomView={renderCustomView}
+                    renderInputToolbar={(props) => renderInputToolbar(props)}
                     onSend={messages => onSend(messages)}
                     user={{
                         _id: userID,
                         name: name
                     }}
                 >
-                    {Platform.OS === 'android' ? <KeyboardAvoidingView behavior='height' />: null}
-                    {Platform.OS === 'ios' ? <KeyboardAvoidingView behavior='padding' />: null}
+                    {Platform.OS === 'android' ? <KeyboardAvoidingView behavior="height" /> : null}
                 </GiftedChat>
             </View>
         </ImageBackground>
@@ -254,17 +256,9 @@ const ChatScreen = ({isConnected, database, storage, route, navigation}) => {
 };
 
 const styles = StyleSheet.create({
-    giftedChat: {
-        flex: 1,
-        justifyContent: 'center',
-    },
+
     rootContainer: {
         flex: 1,
-    },
-    photoButton: {
-        height: '10%',
-        width: '50%',
-        justifyContent: 'center',
     },
 });
 
