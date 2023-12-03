@@ -7,13 +7,14 @@ import React from 'react';
 import { StyleSheet, View, Text, ImageBackground, Platform, KeyboardAvoidingView} from 'react-native';
 import { PropTypes } from 'prop-types';
 import { useEffect, useState } from 'react';
-import { Bubble, GiftedChat, InputToolbar } from 'react-native-gifted-chat';
+import { Bubble, GiftedChat, Send, InputToolbar } from 'react-native-gifted-chat';
 import { collection, orderBy, addDoc, onSnapshot, query, } from 'firebase/firestore';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { contrastText, changeAlpha } from '../../color-library';
 import CustomActions from '../CustomActions/CustomActions';
 import MapView from 'react-native-maps';
 import image from '../../assets/perlin.png';
+import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 
 //For Testing and Debug Alerts
 //import { Alert } from 'react-native';
@@ -163,7 +164,6 @@ const ChatScreen = ({isConnected, database, storage, route, navigation}) => {
     };
 
 
-
     /* const placeHolderFunct = () => {
         Alert.alert('Under construction.');
         return null;
@@ -175,7 +175,7 @@ const ChatScreen = ({isConnected, database, storage, route, navigation}) => {
 
     //LOAD DATABASE
     useEffect(() => {
-
+        console.log(MaterialCommunityIcons);
         //Set the Title to the users' name
         navigation.setOptions({ title: name });
 
@@ -225,8 +225,8 @@ const ChatScreen = ({isConnected, database, storage, route, navigation}) => {
     //#################/   
 
     return (
-        <ImageBackground source = {image} resizeMode='cover' style={[styles.rootContainer]}>
-            <View style={[styles.rootContainer, {backgroundColor: changeAlpha(themeColor, .8)}]}>
+        <ImageBackground source = {image} resizeMode='cover' style={[styles.container]}>
+            <View style={[styles.container, {backgroundColor: changeAlpha(themeColor, .8)}]}>
                 <View
                     style={[{height:20, backgroundColor: changeAlpha(themeColor, .5)}]}
                 >
@@ -239,17 +239,20 @@ const ChatScreen = ({isConnected, database, storage, route, navigation}) => {
                     style={[styles.giftedChat, {backgroundColor: changeAlpha(contrastText(themeColor), .8)}]}
                     messages={messages}
                     renderBubble={(props) => renderBubble(props, themeColor)}
-                    renderActions={renderCustomActions}
-                    renderCustomView={renderCustomView}
                     renderInputToolbar={(props) => renderInputToolbar(props)}
                     onSend={messages => onSend(messages)}
+                    renderActions={renderCustomActions}
+                    renderCustomView={renderCustomView}
+                    alwaysShowSend
+
+
+                    
                     user={{
                         _id: userID,
                         name: name
                     }}
-                >
-                    {Platform.OS === 'android' ? <KeyboardAvoidingView behavior="height" /> : null}
-                </GiftedChat>
+                />
+                {Platform.OS === 'android' ? <KeyboardAvoidingView behavior="height" /> : null}
             </View>
         </ImageBackground>
     );
@@ -257,7 +260,7 @@ const ChatScreen = ({isConnected, database, storage, route, navigation}) => {
 
 const styles = StyleSheet.create({
 
-    rootContainer: {
+    container: {
         flex: 1,
     },
 });

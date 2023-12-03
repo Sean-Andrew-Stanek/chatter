@@ -84,10 +84,6 @@ const StartScreen = ({navigation}) => {
                         //NAVIGATION BUTTON
                     }
                     <TouchableOpacity
-                        accessible={true}
-                        accessibilityLabel='Start'
-                        accessibilityHint='Continue to chat'
-                        accessibilityRole='button'
                         style={[styles.loginItem, styles.loginButton, {backgroundColor: changeAlpha(contrastText(contrastTheme), .4), borderColor: contrastTheme}]}
                         onPress={signInUser}
                     >
