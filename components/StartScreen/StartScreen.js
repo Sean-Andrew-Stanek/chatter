@@ -41,7 +41,7 @@ const StartScreen = ({navigation}) => {
                         //USERNAME INPUT
                     }
                     <TextInput
-                        style={[styles.textInput, styles.loginItem, {fontSize: 36, backgroundColor: changeAlpha(contrastTheme, .1), color:contrastTheme, borderColor:contrastTheme}]}
+                        style={[styles.textInput, styles.loginItem, {fontSize: 20, backgroundColor: changeAlpha(contrastTheme, .1), color:contrastTheme, borderColor:contrastTheme}]}
                         value={name}
                         onChangeText={setName}
                         placeholder='Type your username here'
@@ -84,7 +84,7 @@ const StartScreen = ({navigation}) => {
                         onPress={signInUser}
                     >
                         <Text 
-                            style={[styles.loginButtonText, {color:contrastTheme, fontSize: 40}]}
+                            style={[styles.loginButtonText, {color:contrastTheme, fontSize: 20}]}
                         >
                             Start Chatting
                         </Text>

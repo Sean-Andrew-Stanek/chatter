@@ -105,11 +105,11 @@ const ChatScreen = ({isConnected, database, storage, route, navigation}) => {
         if(isConnected)
             return (
                 <InputToolbar 
-                    containerStyle = {{backgroundColor:themeColor, height: 80}}
-                    primaryStyle = {{backgroundColor:changeAlpha(contrastText(themeColor), .5)}}
+                    textStyle={{fontSize: 30}}
+
                     contentContainerStyle={{padding:0}}
                     {...props} 
-                    textStyle={{fontSize: 30}}
+
                 />
             );
         else
@@ -129,6 +129,7 @@ const ChatScreen = ({isConnected, database, storage, route, navigation}) => {
 
     //When text message is sent
     const onSend = (newMessages) => {
+        console.log(newMessages);
         addDoc(collection(database, firebaseDBName), newMessages[0]);
     };
 
