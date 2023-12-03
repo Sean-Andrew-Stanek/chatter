@@ -5,6 +5,8 @@ import { initializeApp } from 'firebase/app';
 import { disableNetwork, enableNetwork, getFirestore } from 'firebase/firestore';
 import { useNetInfo } from '@react-native-community/netinfo';
 import { Alert } from 'react-native';
+import { getStorage } from 'firebase/storage';
+
 
 //Recommended by Firebase
 //import { getAnalytics } from 'firebase/analytics';
@@ -44,7 +46,9 @@ const App = () => {
     // Initialize Firebase
     const app = initializeApp(firebaseConfig);
 
+    // Initialize Firebase Props
     const database = getFirestore(app);
+    const storage = getStorage(app);
 
     return (
         <NavigationContainer>
@@ -63,6 +67,7 @@ const App = () => {
                         <ChatScreen
                             isConnected = {connectionStatus.isConnected}
                             database = {database}
+                            storage = {storage}
                             {...props}
                         />
                     }

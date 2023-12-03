@@ -12,6 +12,7 @@ import { collection, orderBy, addDoc, onSnapshot, query, } from 'firebase/firest
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { contrastText, changeAlpha } from '../../color-library';
 import CustomActions from '../CustomActions/CustomActions';
+import MapView from 'react-native-maps';
 
 //For Testing and Debug Alerts
 //import { Alert } from 'react-native';
@@ -30,7 +31,7 @@ const firebaseDBName = 'Messages';
 ///##    MAIN     ##/
 //#################/
 
-const ChatScreen = ({isConnected, database, route, navigation}) => {
+const ChatScreen = ({isConnected, database, storage, route, navigation}) => {
     
     ////#################/
     ///##   States   ###/
@@ -43,6 +44,34 @@ const ChatScreen = ({isConnected, database, route, navigation}) => {
     ////#################/
     ///##  Functions ###/
     //#################/
+
+    
+    const renderCustomView = (props) => {
+        // eslint-disable-next-line react/prop-types
+        const { currentMessage } = props;
+        // eslint-disable-next-line react/prop-types
+        if(currentMessage.location) {
+            return (
+                <MapView
+                    style={{
+                        width: 150,
+                        height: 100,
+                        borderRadius: 13,
+                        margin:3
+                    }}
+                    region={{
+                        // eslint-disable-next-line react/prop-types
+                        latitude: currentMessage.location.latitude,
+                        // eslint-disable-next-line react/prop-types
+                        longitude: currentMessage.location.longitude,
+                        latitudeDelta: 0.0922,
+                        longitudeDelta: 0.0421
+                    }}
+                />
+            );
+        }
+
+    };
     
     //Chat Bubbles
     const renderBubble = (props, themeColor) => {
@@ -79,13 +108,18 @@ const ChatScreen = ({isConnected, database, route, navigation}) => {
     };
 
     const renderCustomActions = (props) => {
-        return <CustomActions {...props} />;
+        return (
+            <CustomActions 
+                storage = {storage} 
+                {...props} 
+                userID = {userID}
+                themeColor = {themeColor}
+            />
+        );
     };
 
     //When text message is sent
     const onSend = (newMessages) => {
-        /* setMessages(previousMessages => GiftedChat.append(previousMessages, newMessages)); */
-        console.log('New Message id ' + newMessages[0].user._id);
         addDoc(collection(database, firebaseDBName), newMessages[0]);
     };
 
@@ -93,10 +127,10 @@ const ChatScreen = ({isConnected, database, route, navigation}) => {
     //NOTE:  The data is only locally deleted and
     //will be refreshed on message sent or when
     //moving from offline -> online
-    const eraseDatabase = () => {
+    /*const eraseDatabase = () => {
         AsyncStorage.removeItem(asyncDBKey);
         setMessages([]);
-    };
+    }; */
 
     //Store for when the user is offline
     const cacheDatabase = async(dataToBase) => {
@@ -186,6 +220,7 @@ const ChatScreen = ({isConnected, database, route, navigation}) => {
                 renderBubble={(props) => renderBubble(props, themeColor)}
                 renderInputToolbar={(props) => renderInputToolbar(props)}
                 renderActions={renderCustomActions}
+                renderCustomView={renderCustomView}
                 onSend={messages => onSend(messages)}
                 user={{
                     _id: userID,
@@ -233,6 +268,8 @@ const styles = StyleSheet.create({
 //#################/
 ChatScreen.propTypes = {
     database: PropTypes.shape({
+    }).isRequired,
+    storage: PropTypes.shape({
     }).isRequired,
     route: PropTypes.shape({
         params: PropTypes.object.isRequired,
